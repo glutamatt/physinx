@@ -3,3 +3,4 @@ node_modules
 physics/box2d.js
 npm-debug.log
 .idea/
+web/public

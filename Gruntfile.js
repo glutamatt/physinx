@@ -7,14 +7,14 @@ module.exports = function(grunt) {
     concat: {
       options: {separator: ';'},
       dist: {
-        src: ['bower_components/box2d.js/box2d.js', 'physics/module.js'],
+        src: ['bower_components/box2d.js/build/Box2D_v2.3.1_min.js', 'physics/module.js'],
         dest: 'physics/box2d.js'
       }
     },
     clean: ["./lib"],
     browserify: {
       poc: {
-        src: ['game/poc.js'],
+        src: ['game/web.js'],
         dest: appConf.web.js.build_path
       }
     }
