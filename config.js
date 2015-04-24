@@ -1,10 +1,14 @@
-console.log('config')
+var js        = {}
+var jsPath    = '/public/js/'
+var jsGame    = 'build/game.js'
+js.web        = { path: jsPath }
+js.build      = { path: 'web' + jsPath }
+js.build.game = js.build.path + jsGame
+js.web.game   = js.web.path + jsGame
+exports.js    = js
 
-var public_path = 'public/js/build/webpoc.js'
 
-exports.web = {
-	js: {
-        public_path: public_path,
-		build_path: 'web/' + public_path
-	}
+exports.box2d = {
+    path          : 'bower_components/box2d.js/',
+    debugDrawFile : 'embox2d-html5canvas-debugDraw.js',
 }

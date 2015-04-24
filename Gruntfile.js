@@ -7,7 +7,7 @@ module.exports = function(grunt) {
     concat: {
       options: {separator: ';'},
       dist: {
-        src: ['bower_components/box2d.js/build/Box2D_v2.3.1_min.js', 'physics/module.js'],
+        src: [config.box2d.path + 'build/Box2D_v2.3.1_min.js', 'physics/module.js'],
         dest: 'physics/box2d.js'
       }
     },
@@ -15,7 +15,19 @@ module.exports = function(grunt) {
     browserify: {
       poc: {
         src: ['game/web.js'],
-        dest: config.web.js.build_path
+        dest: config.js.build.game
+      }
+    },
+    copy: {
+      main: {
+        files: [
+          {
+            src: config.box2d.debugDrawFile,
+            cwd: config.box2d.path + 'helpers/',
+            dest: config.js.build.path,
+            expand: true
+          }
+        ]
       }
     }
   });
@@ -24,6 +36,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-browserify');
+  grunt.loadNpmTasks('grunt-contrib-copy');
 
-  grunt.registerTask('default', ['bower', 'concat', 'browserify', 'clean']);
+  grunt.registerTask('default', ['bower', 'concat', 'copy', 'browserify', 'clean']);
 };
