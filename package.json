@@ -2,7 +2,7 @@
   "name": "physinx",
   "version": "0.1.0",
   "description": "Physics syncronized plus Graphics",
-  "main": "server.js",
+  "main": "application.js",
   "scripts": {
     "postinstall": "./node_modules/grunt-cli/bin/grunt"
   },

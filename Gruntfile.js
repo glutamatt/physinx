@@ -1,6 +1,6 @@
 module.exports = function(grunt) {
 
-  var appConf = require('./appConf')
+  var config = require('./config')
 
   grunt.initConfig({
     bower: { install : { options : { cleanTargetDir: true } } },
@@ -15,7 +15,7 @@ module.exports = function(grunt) {
     browserify: {
       poc: {
         src: ['game/web.js'],
-        dest: appConf.web.js.build_path
+        dest: config.web.js.build_path
       }
     }
   });
