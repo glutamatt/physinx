@@ -1,3 +1,5 @@
 var core = require('./core')
 
-exports.start = core.start
+exports.start = function() {
+    core.start({})
+}

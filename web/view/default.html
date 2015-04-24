@@ -1,9 +1,13 @@
 <html>
 	<head>
 		<title></title>
+        <style>
+          body   {margin: 0px;padding: 0px;}
+          canvas {border: 1px solid #9C9898;}
+    </style>
 	</head>
 	<body>
-        {{ content }}
+        <canvas id="canvas" width="640" height="480" tabindex='1'></canvas>
         <script type="application/javascript" src="{{ box2dDebug }}"></script>
 		<script type="application/javascript" src="{{ jsGame }}"></script>
 	</body>
