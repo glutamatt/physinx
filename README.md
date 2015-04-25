@@ -2,7 +2,6 @@ physinx
 =======
 
 ```
-npm install
-node server.js
+npm install && ./application.js
 ```
 
