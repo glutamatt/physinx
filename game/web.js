@@ -1,6 +1,7 @@
 require('_process').stderr = {write: function(m){console.log(m)}}
 
 var core = require('./core')
+core.setBox2d(Box2D)
 
 var pixelsByMeter = 30
 

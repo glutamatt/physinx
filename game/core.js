@@ -1,6 +1,10 @@
-var box2d = require('../physics/box2d')
+var box2d;
 
-exports.box2d = box2d
+exports.setBox2d = function(box2D) {
+    exports.box2d = box2D
+    global.box2d = box2D
+    box2d = box2D
+}
 
 var onWorldCreated = function() {}
 exports.setOnWorldCreated = function(callback) {

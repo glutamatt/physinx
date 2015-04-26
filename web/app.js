@@ -14,9 +14,8 @@ app.use('/public', express.static(__dirname + '/public'))
 // controllers
 app.get('/', function(req, res){
   res.render('default.html', {
-    box2dDebug:   config.js.web.path + config.box2d.debugDrawFile,
-    box2dHelpers: config.js.web.path + config.box2d.helperFile,
-    jsGame:       config.js.web.game
+    libsFilePath: config.js.web.libs,
+    gameFilePath: config.js.web.game
   })
 })
 

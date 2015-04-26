@@ -10,6 +10,6 @@
     "tests"
   ],
   "dependencies": {
-    "box2d.js": "*"
+    "box2d.js": "5fae0ce4fd"
   }
 }
