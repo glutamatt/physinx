@@ -2,12 +2,15 @@ require('_process').stderr = {write: function(m){console.log(m)}}
 
 var core = require('./core')
 
+var pixelsByMeter = 30
+
 core.setOnStep(function(world) {
     context.fillStyle = 'rgb(0,0,0)'
     context.fillRect( 0, 0, canvas.width, canvas.height )
     context.save()
     context.scale(1,-1)
-    context.scale(30,30)
+    context.scale(pixelsByMeter, pixelsByMeter)
+    context.lineWidth = 1/pixelsByMeter;
     context.fillStyle = 'rgb(255,255,0)'
     world.DrawDebugData()
     context.restore()

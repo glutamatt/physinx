@@ -11,4 +11,5 @@ exports.js    = js
 exports.box2d = {
     path          : 'bower_components/box2d.js/',
     debugDrawFile : 'embox2d-html5canvas-debugDraw.js',
+    helperFile    : 'embox2d-helpers.js'
 }

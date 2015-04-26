@@ -22,7 +22,7 @@ module.exports = function(grunt) {
       main: {
         files: [
           {
-            src: config.box2d.debugDrawFile,
+            src: [config.box2d.debugDrawFile, config.box2d.helperFile],
             cwd: config.box2d.path + 'helpers/',
             dest: config.js.build.path,
             expand: true
