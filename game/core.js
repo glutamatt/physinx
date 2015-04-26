@@ -2,7 +2,6 @@ var box2d;
 
 exports.setBox2d = function(box2D) {
     exports.box2d = box2D
-    global.box2d = box2D
     box2d = box2D
 }
 
@@ -78,7 +77,7 @@ exports.start = function() {
 
 	setInterval(function() {
         world.Step(1/25, 20, 20);
-        console.log(newbody.GetAngle(), newbody2.GetAngle(), newbody.GetPosition().get_y())
+        //console.log(newbody.GetAngle(), newbody2.GetAngle(), newbody.GetPosition().get_y())
         onStep(world)
 	}, 1000/25);
 
