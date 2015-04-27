@@ -55,7 +55,7 @@ var updateMousePos = function(canvas, evt) {
         x: evt.clientX - rect.left,
         y: canvas.height - (evt.clientY - rect.top)
     };
-    mousePosWorld = getWorldPointFromPixelPoint(mousePosPixel);
+    mousePosWorld = getWorldPointFromPixelPoint(mousePosPixel)
 }
 
 var startMouseJoint = function() {    
@@ -73,12 +73,12 @@ var startMouseJoint = function() {
 var onMouseMove = function(canvas, evt) {
     updateMousePos(canvas, evt);
     if ( mouseDown ) {
-        onMouseJoinMove(mousePosWorld.x, mousePosWorld.y)
+        onMouseJointMove(mousePosWorld.x, mousePosWorld.y)
     }
 }
-var onMouseJoinMove = function(x, y) {}
-exports.onMouseJoinMove = function(callback) {
-    onMouseJoinMove = callback
+var onMouseJointMove = function(x, y) {}
+exports.onMouseJointMove = function(callback) {
+    onMouseJointMove = callback
 }
 
 var onMouseJointDestroy = function() {}
@@ -93,7 +93,7 @@ var onMouseUp = function(canvas, evt) {
 exports.onWorldCreated = function(pWorld) {
     world = pWorld
     var debugDraw = getCanvasDebugDraw()
-    debugDraw.SetFlags(1)
+    debugDraw.SetFlags(3)
     world.SetDebugDraw(debugDraw)
     mouseJointGroundBody = world.CreateBody( new Box2D.b2BodyDef() )
     myQueryCallback = new Box2D.JSQueryCallback

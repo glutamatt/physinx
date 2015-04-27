@@ -9,26 +9,18 @@ core.setBox2d(Box2D)
 
 var debug = require('./../web/debug')
 debug.init(core.box2d, document.getElementById("canvas"), pixelsByMeter)
-debug.onBodyPress(function(mouseWorldX, mouseWorldY){
-    io.emit('onBodyPress', [mouseWorldX, mouseWorldY])
-})
-debug.onMouseJoinMove(function (mouseWorldX, mouseWorldY){
-    io.emit('moveMouseJoin', [mouseWorldX, mouseWorldY])
-})
-debug.onMouseJointDestroy(function (){
-    io.emit('destroyMouseJoint')
-})
+
+debug.onBodyPress(function(x, y){ io.emit('onBodyPress', [x, y])})
+debug.onMouseJointMove(function (x, y){io.emit('moveMouseJoint', [x, y])})
+debug.onMouseJointDestroy(function (){ io.emit('destroyMouseJoint')})
 
 core.setOnWorldCreated(function(world) {debug.onWorldCreated(world)})
-core.setOnStep(function(world) {debug.draw()})
+core.setOnStep(function() {debug.draw()})
 
 core.start()
 
-io.on('bodyCreated', function(args) {
-    body = core[args[0]].apply(core[args[0]], args[1])
-    console.log(body)
+io.on('remoteSync', function(args) {
+    core[args[0]] || console.log(args[0])
+    core[args[0]].apply(core[args[0]], args[1])
 })
-
-io.on('bodiesUpdate', function(updates) {
-    core.bodiesUpdates.set(updates)
-})
+io.on('bodiesUpdate', function(updates) {core.bodiesUpdates.set(updates)})
