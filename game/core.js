@@ -1,4 +1,5 @@
 var box2d;
+var world;
 
 exports.setBox2d = function(box2D) {
     exports.box2d = box2D
@@ -15,9 +16,41 @@ exports.setOnStep = function(callback) {
     onStep = callback
 }
 
+var onBodyCreated = function() {}
+exports.setOnBodyCreated = function(callback) {
+    onBodyCreated = callback
+}
+
+var bodies = {}
+
+exports.createCube = function(bodyId, boxW, boxH, posX, posY, angle) {
+
+    if (bodyId && bodyId in bodies) return bodies[bodyId]
+
+    var fixDef = new box2d.b2FixtureDef
+    fixDef.set_density(1)
+    fixDef.set_friction(.5)
+    fixDef.set_restitution(.2)
+    var bodyDef = new box2d.b2BodyDef
+    bodyDef.set_type(box2d.b2_dynamicBody)
+    var shape = new box2d.b2PolygonShape
+    shape.SetAsBox(boxW, boxH)
+    fixDef.set_shape(shape)
+    bodyDef.get_position().set_x(posX)
+    bodyDef.get_position().set_y(posY)
+    bodyDef.set_angle(angle)
+    var newbody = world.CreateBody(bodyDef)
+    newbody.CreateFixture(fixDef)
+
+    onBodyCreated('createCube', [newbody.e, boxW, boxH, posX, posY, angle])
+    bodies[newbody.e] = newbody
+
+    return newbody
+}
+
 exports.start = function() {
 
-    var world = new box2d.b2World(new box2d.b2Vec2(0.0, -10.0));
+    world = new box2d.b2World(new box2d.b2Vec2(0.0, -10.0));
     onWorldCreated(world)
 
     // ground
@@ -31,39 +64,12 @@ exports.start = function() {
     groundBodyDef.get_position().set_y(-15)
     world.CreateBody(groundBodyDef).CreateFixture(groundFixDef)
 
-    //Cube
-    var fixDef = new box2d.b2FixtureDef
-    fixDef.set_density(1)
-    fixDef.set_friction(.5)
-    fixDef.set_restitution(.2)
-    var bodyDef = new box2d.b2BodyDef
-    bodyDef.set_type(box2d.b2_dynamicBody)
-    var shape = new box2d.b2PolygonShape
-    shape.SetAsBox(.5, .5)
-    fixDef.set_shape(shape)
-    bodyDef.get_position().set_x(5)
-    bodyDef.get_position().set_y(0)
-    bodyDef.set_angle(Math.PI/3)
-    var newbody = world.CreateBody(bodyDef)
-    newbody.CreateFixture(fixDef)
-
-    //Cube2
-    var fixDef = new box2d.b2FixtureDef
-    fixDef.set_density(1)
-    fixDef.set_friction(.5)
-    fixDef.set_restitution(.2)
-    var bodyDef = new box2d.b2BodyDef
-    bodyDef.set_type(box2d.b2_dynamicBody)
-    var shape = new box2d.b2PolygonShape
-    shape.SetAsBox(.5, .5)
-    fixDef.set_shape(shape)
-    bodyDef.get_position().set_x(5.2)
-    bodyDef.get_position().set_y(7)
-    bodyDef.set_angle(Math.PI/6)
-    var newbody2 = world.CreateBody(bodyDef)
-    newbody2.CreateFixture(fixDef)
-
     //Ball
+    /*
+    var fixDef = new box2d.b2FixtureDef
+    fixDef.set_density(1)
+    fixDef.set_friction(.5)
+    fixDef.set_restitution(.2)
     var bodyDef = new box2d.b2BodyDef
     bodyDef.set_type(box2d.b2_dynamicBody)
     var shape = new box2d.b2CircleShape
@@ -74,11 +80,12 @@ exports.start = function() {
     bodyDef.set_angle(Math.PI/3)
     var circleBody = world.CreateBody(bodyDef)
     circleBody.CreateFixture(fixDef)
+    */
 
 	setInterval(function() {
         world.Step(1/25, 20, 20);
         //console.log(newbody.GetAngle(), newbody2.GetAngle(), newbody.GetPosition().get_y())
-        onStep(world)
+        onStep(world, bodies)
 	}, 1000/25);
 
     return {box2d: box2d, world: world}
