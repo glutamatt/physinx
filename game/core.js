@@ -143,31 +143,19 @@ exports.start = function() {
     // ground
     var groundFixDef = new box2d.b2FixtureDef
     var groundShape = new box2d.b2PolygonShape
-    groundShape.SetAsBox(10, .3)
+    groundShape.SetAsBox(15, .3)
     groundFixDef.set_shape(groundShape)
     var groundBodyDef = new box2d.b2BodyDef
     groundBodyDef.set_type(box2d.b2_staticBody)
-    groundBodyDef.get_position().set_x(10)
+    groundBodyDef.get_position().set_x(15)
+    groundBodyDef.get_position().set_y(-20)
+    world.CreateBody(groundBodyDef).CreateFixture(groundFixDef)
+    groundShape.SetAsBox(.3, 15)
+    groundBodyDef.get_position().set_x(0)
     groundBodyDef.get_position().set_y(-15)
     world.CreateBody(groundBodyDef).CreateFixture(groundFixDef)
-
-    //Ball
-    /*
-    var fixDef = new box2d.b2FixtureDef
-    fixDef.set_density(1)
-    fixDef.set_friction(.5)
-    fixDef.set_restitution(.2)
-    var bodyDef = new box2d.b2BodyDef
-    bodyDef.set_type(box2d.b2_dynamicBody)
-    var shape = new box2d.b2CircleShape
-    shape.set_m_radius(.5)
-    fixDef.set_shape(shape)
-    bodyDef.get_position().set_x(5)
-    bodyDef.get_position().set_y(2)
-    bodyDef.set_angle(Math.PI/3)
-    var circleBody = world.CreateBody(bodyDef)
-    circleBody.CreateFixture(fixDef)
-    */
+    groundBodyDef.get_position().set_x(26.5)
+    world.CreateBody(groundBodyDef).CreateFixture(groundFixDef)
 
 	setInterval(function() {
         world.Step(1/30, 5, 5)
