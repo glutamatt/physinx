@@ -9,6 +9,16 @@ core.setBox2d(Box2D)
 
 var debug = require('./../web/debug')
 debug.init(core.box2d, document.getElementById("canvas"), pixelsByMeter)
+debug.onBodyPress(function(mouseWorldX, mouseWorldY){
+    io.emit('onBodyPress', [mouseWorldX, mouseWorldY])
+})
+debug.onMouseJoinMove(function (mouseWorldX, mouseWorldY){
+    io.emit('moveMouseJoin', [mouseWorldX, mouseWorldY])
+})
+debug.onMouseJointDestroy(function (){
+    io.emit('destroyMouseJoint')
+})
+
 core.setOnWorldCreated(function(world) {debug.onWorldCreated(world)})
 core.setOnStep(function(world) {debug.draw()})
 

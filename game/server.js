@@ -13,8 +13,20 @@ exports.start = function(io) {
         io.emit('bodiesUpdate', core.bodiesUpdates.get())
     })
 
-    io.on('connection', function(socket){
+    setTimeout(function() {
         core.createCube(null, .5, .5, 5, 0, Math.PI/3)
         core.createCube(null, .5, .5, 5.2, 7, Math.PI/6)
+    }, 3000)
+
+    io.on('connection', function(socket){
+        socket.on('onBodyPress', function(args) {
+            core.startMouseJoint.apply(core.startMouseJoint, args)
+        })
+        socket.on('moveMouseJoin', function(args) {
+            core.moveMouseJoin.apply(core.moveMouseJoin, args)
+        })
+        socket.on('destroyMouseJoint', function() {
+            core.destroyMouseJoint.apply(core.destroyMouseJoint)
+        })
     })
 }

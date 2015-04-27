@@ -29,6 +29,13 @@ exports.draw = function() {
     context.restore()
 }
 
+var onBodyPress = function (x, y) {}
+exports.onBodyPress = function (callback) {
+    onBodyPress = callback
+}
+
+var onMouseMove
+
 function getWorldPointFromPixelPoint(pixelPoint) {
     return {                
         x: pixelPoint.x/pixelsByMeter,
@@ -51,44 +58,36 @@ var updateMousePos = function(canvas, evt) {
     mousePosWorld = getWorldPointFromPixelPoint(mousePosPixel);
 }
 
-var startMouseJoint = function() {
-    if ( mouseJoint != null ) return
-    
+var startMouseJoint = function() {    
     var aabb = new Box2D.b2AABB();
     var d = 0.001;            
     aabb.set_lowerBound(new Box2D.b2Vec2(mousePosWorld.x - d, mousePosWorld.y - d));
     aabb.set_upperBound(new Box2D.b2Vec2(mousePosWorld.x + d, mousePosWorld.y + d));
-    
     myQueryCallback.m_fixture = null;
     myQueryCallback.m_point = new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y);
     world.QueryAABB(myQueryCallback, aabb);
-    
     if (!myQueryCallback.m_fixture) return
-
-    var body = myQueryCallback.m_fixture.GetBody();
-    var md = new Box2D.b2MouseJointDef();
-    md.set_bodyA(mouseJointGroundBody);
-    md.set_bodyB(body);
-    md.set_target( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
-    md.set_maxForce( 1000 * body.GetMass() );
-    md.set_collideConnected(true);
-    
-    mouseJoint = Box2D.castObject( world.CreateJoint(md), Box2D.b2MouseJoint );
-    body.SetAwake(true);
+    onBodyPress(mousePosWorld.x, mousePosWorld.y)
 }
 
 var onMouseMove = function(canvas, evt) {
     updateMousePos(canvas, evt);
-    if ( mouseDown && mouseJoint != null ) {
-        mouseJoint.SetTarget( new Box2D.b2Vec2(mousePosWorld.x, mousePosWorld.y) );
+    if ( mouseDown ) {
+        onMouseJoinMove(mousePosWorld.x, mousePosWorld.y)
     }
 }
+var onMouseJoinMove = function(x, y) {}
+exports.onMouseJoinMove = function(callback) {
+    onMouseJoinMove = callback
+}
 
+var onMouseJointDestroy = function() {}
+exports.onMouseJointDestroy = function (callback) {
+    onMouseJointDestroy = callback
+}
 var onMouseUp = function(canvas, evt) {
-    mouseDown = false;
-    if ( mouseJoint == null ) return
-    world.DestroyJoint(mouseJoint);
-    mouseJoint = null;
+    mouseDown && onMouseJointDestroy()
+    mouseDown = false
 }
 
 exports.onWorldCreated = function(pWorld) {

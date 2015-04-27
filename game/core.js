@@ -1,9 +1,10 @@
-var box2d;
-var world;
+var box2d, Box2D
+var world
+var queryCallback
+var mouseJointGroundBody
 
 exports.setBox2d = function(box2D) {
-    exports.box2d = box2D
-    box2d = box2D
+    exports.box2d = box2d = Box2D = box2D
 }
 
 var onWorldCreated = function() {}
@@ -43,9 +44,44 @@ exports.createCube = function(bodyId, boxW, boxH, posX, posY, angle) {
     newbody.CreateFixture(fixDef)
 
     onBodyCreated('createCube', [newbody.e, boxW, boxH, posX, posY, angle])
-    bodies[newbody.e] = newbody
+    bodies[bodyId || newbody.e] = newbody
 
     return newbody
+}
+
+
+var mouseJoint //tmp unique for now
+exports.startMouseJoint = function(x, y) {
+    var aabb = new Box2D.b2AABB();
+    var d = 0.001;            
+    aabb.set_lowerBound(new Box2D.b2Vec2(x - d, y - d));
+    aabb.set_upperBound(new Box2D.b2Vec2(x + d, y + d));
+    
+    queryCallback.m_fixture = null;
+    queryCallback.m_point = new Box2D.b2Vec2(x, y);
+    world.QueryAABB(queryCallback, aabb);
+    if (!queryCallback.m_fixture) return
+
+    var body = queryCallback.m_fixture.GetBody();
+    var md = new Box2D.b2MouseJointDef();
+    md.set_bodyA(mouseJointGroundBody);
+    md.set_bodyB(body);
+    md.set_target(new Box2D.b2Vec2(x, y))
+    md.set_maxForce(100 * body.GetMass())
+    md.set_collideConnected(true);
+
+    mouseJoint = Box2D.castObject( world.CreateJoint(md), Box2D.b2MouseJoint )
+    body.SetAwake(true)
+}
+exports.destroyMouseJoint = function() {
+    if ( mouseJoint == null ) return
+    world.DestroyJoint(mouseJoint);
+    mouseJoint = null;
+}
+exports.moveMouseJoin = function(x, y) {
+    if (mouseJoint != null ) {
+        mouseJoint.SetTarget( new Box2D.b2Vec2(x, y) )
+    }
 }
 
 var bodiesUpdates = {
@@ -54,8 +90,10 @@ var bodiesUpdates = {
         var pos, body
         for(var i in bodies) {
             body = bodies[i]
-            pos = body.GetPosition()
-            updates[i] = [pos.get_x(), pos.get_y(), body.GetAngle()]
+            if (body.IsAwake()) {
+                pos = body.GetPosition()
+                updates[i] = [pos.get_x(), pos.get_y(), body.GetAngle()]
+            }
         }
 
         return updates
@@ -63,10 +101,11 @@ var bodiesUpdates = {
     set: function (updates) {
         for(var i in updates) {
             if( !(body = bodies[i]) ) return
+            body.SetAwake(true)
             pos = body.GetPosition()
             pos.set_x(updates[i][0])
             pos.set_y(updates[i][1])
-            body.SetAngle(updates[i][1])
+            body.SetTransform(pos, updates[i][2])
         }
     }
 }
@@ -75,8 +114,18 @@ exports.bodiesUpdates = bodiesUpdates
 
 exports.start = function() {
 
-    world = new box2d.b2World(new box2d.b2Vec2(0.0, -10.0));
+    world = new box2d.b2World(new box2d.b2Vec2(0.0, -10.0), false);
     onWorldCreated(world)
+    mouseJointGroundBody = world.CreateBody(new Box2D.b2BodyDef())
+    queryCallback = new Box2D.JSQueryCallback
+    queryCallback.ReportFixture = function(fixturePtr) {
+        var fixture = Box2D.wrapPointer(fixturePtr, Box2D.b2Fixture)
+        if (fixture.GetBody().GetType() != Box2D.b2_dynamicBody ||
+            !fixture.TestPoint( this.m_point )
+        ) return true;
+        this.m_fixture = fixture;
+        return false;
+    }
 
     // ground
     var groundFixDef = new box2d.b2FixtureDef
@@ -108,8 +157,7 @@ exports.start = function() {
     */
 
 	setInterval(function() {
-        world.Step(1/25, 20, 20);
-        //console.log(newbody.GetAngle(), newbody2.GetAngle(), newbody.GetPosition().get_y())
+        world.Step(1/25, 20, 20)
         onStep(world)
 	}, 1000/25);
 
