@@ -9,15 +9,8 @@ exports.start = function(io) {
         io.emit('bodyCreated', [method, args])
     })
 
-    core.setOnStep(function(world, bodies){
-        var updates = {}
-        var pos, body
-        for(var i in bodies) {
-            body = bodies[i]
-            pos = body.GetPosition()
-            updates[i] = [pos.get_x(), pos.get_y(), body.GetAngle()]
-        }
-        io.emit('bodiesUpdate', updates)
+    core.setOnStep(function(world){
+        io.emit('bodiesUpdate', core.bodiesUpdates.get())
     })
 
     io.on('connection', function(socket){

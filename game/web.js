@@ -19,6 +19,6 @@ io.on('bodyCreated', function(args) {
     console.log(body)
 })
 
-io.on('bodiesUpdate', function(args) {
-    console.log(args)
+io.on('bodiesUpdate', function(updates) {
+    core.bodiesUpdates.set(updates)
 })

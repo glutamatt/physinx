@@ -48,6 +48,31 @@ exports.createCube = function(bodyId, boxW, boxH, posX, posY, angle) {
     return newbody
 }
 
+var bodiesUpdates = {
+    get: function() {
+        var updates = {}
+        var pos, body
+        for(var i in bodies) {
+            body = bodies[i]
+            pos = body.GetPosition()
+            updates[i] = [pos.get_x(), pos.get_y(), body.GetAngle()]
+        }
+
+        return updates
+    },
+    set: function (updates) {
+        for(var i in updates) {
+            if( !(body = bodies[i]) ) return
+            pos = body.GetPosition()
+            pos.set_x(updates[i][0])
+            pos.set_y(updates[i][1])
+            body.SetAngle(updates[i][1])
+        }
+    }
+}
+
+exports.bodiesUpdates = bodiesUpdates
+
 exports.start = function() {
 
     world = new box2d.b2World(new box2d.b2Vec2(0.0, -10.0));
@@ -85,7 +110,7 @@ exports.start = function() {
 	setInterval(function() {
         world.Step(1/25, 20, 20);
         //console.log(newbody.GetAngle(), newbody2.GetAngle(), newbody.GetPosition().get_y())
-        onStep(world, bodies)
+        onStep(world)
 	}, 1000/25);
 
     return {box2d: box2d, world: world}
