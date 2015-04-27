@@ -1,5 +1,7 @@
 require('_process').stderr = {write: function(m){console.log(m)}}
 
+var socket = io()
+
 var pixelsByMeter = 30
 
 var core = require('./core')

@@ -3,5 +3,5 @@
 var server = require('./game/server')
 var webapp = require('./web/app')
 
-server.start()
+server.start(webapp.io)
 webapp.start()

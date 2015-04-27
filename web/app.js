@@ -1,8 +1,10 @@
-var express = require('express');
-var app = express();
+var express = require('express')
+var app = express()
+var http = require('http').Server(app)
 var config = require('../config')
 
-//template engine
+exports.io = require('socket.io')(http);
+
 swig = require('swig')
 app.engine('html', swig.renderFile)
 app.set('view engine', 'html');
@@ -11,7 +13,6 @@ app.set('view cache', false)
 swig.setDefaults({ cache: false })
 app.use('/public', express.static(__dirname + '/public'))
 
-// controllers
 app.get('/', function(req, res){
   res.render('default.html', {
     libsFilePath: config.js.web.libs,
@@ -19,9 +20,8 @@ app.get('/', function(req, res){
   })
 })
 
-//Start
 exports.start = function() {
-	var server = app.listen(3000, function() {
-    	console.log('Listening on port %d', server.address().port);
-	})
+    var server = http.listen(3000, function() {
+        console.log('Listening on port %d', server.address().port);
+    })
 }

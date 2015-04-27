@@ -92,7 +92,6 @@ var onMouseUp = function(canvas, evt) {
 }
 
 exports.onWorldCreated = function(pWorld) {
-    console.log('onWorldCreated')
     world = pWorld
     var debugDraw = getCanvasDebugDraw()
     debugDraw.SetFlags(1)
