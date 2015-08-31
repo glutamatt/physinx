@@ -4,16 +4,20 @@ core.setBox2d(require('../physics/box2d'))
 exports.start = function(io) {
     core.start()
 
-    setInterval(function() {
-        core.createCube(
-            null, //id
-            .5 * (Math.floor(Math.random() * 2) + 1), //w
-            .5 * (Math.floor(Math.random() * 2) + 1), //h
-            5 * Math.random() * 2, //x
-            0, //y
-            Math.PI/(Math.random() * 4)// angle
-        )
-    }, 3000)
+    var startPopulate = function(){
+        setInterval(function() {
+            core.createCube(
+                null, //id
+                .5 * (Math.floor(Math.random() * 2) + 1), //w
+                .5 * (Math.floor(Math.random() * 2) + 1), //h
+                5 * Math.random() * 2, //x
+                0, //y
+                Math.PI/(Math.random() * 4)// angle
+            )
+        }, 3000)
+    }
+
+    var populateTimeout
 
     core.setRemoteSync(function(method, args) {io.emit('remoteSync', [method, args])})
     core.setOnStep(function(){ io.emit('bodiesUpdate', core.bodiesUpdates.get())})
@@ -25,5 +29,8 @@ exports.start = function(io) {
         socket.on('onBodyPress', function(args) { mouseJoint = uCall(core.startMouseJoint, args)})
         socket.on('moveMouseJoint', function(args) { args.unshift(mouseJoint); uCall(core.moveMouseJoint, args)})
         socket.on('destroyMouseJoint', function() { uCall(core.destroyMouseJoint, [mouseJoint]) ; mouseJoint = null })
+
+        clearTimeout(populateTimeout)
+        populateTimeout = setTimeout(startPopulate, 5000)
     })
 }
